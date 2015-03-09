@@ -1,5 +1,6 @@
 var Hapi = require('hapi');
 var format = require ('pg-format')
+var turf = require('turf')
 
 // Create a server with a host and port
 var server = new Hapi.Server();
@@ -48,7 +49,14 @@ server.route({
     path:'/cadastre',
     handler: function (request, reply) {
       console.log(request.payload);
-      geom = JSON.parse(request.payload.geom)
+      geom = JSON.parse(request.payload.geom);
+      var area = turf.area(geom.geometry);
+      if (area>38363030){
+        reply({status:'Area too big'})
+          .code(403)
+          .header('access-control-allow-origin', '*')
+      }
+      console.log(area);
       sql = cadastre(geom.geometry);
       request.pg.client.query(sql, function (err, result){
         var featureCollection = new FeatureCollection();
