@@ -1,0 +1,9 @@
+{
+ "name": "apicarto-cadastre",
+ "version": "0.0.2",
+ "description": "An interface for querying french cadastre.",
+ "main": "index.js",
+ "author": "Nabil Servais (SGMAP)",
+ "private": true,
+ "license": "MIT"
+} 
