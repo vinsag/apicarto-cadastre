@@ -1,14 +1,19 @@
 {
-  "name": "express-cadastre",
-  "version": "0.0.0",
-  "description": "",
+  "name": "apicarto-cadastre",
+  "version": "0.1.0",
   "main": "index.js",
   "scripts": {
     "lint": "eslint lib/**/*.js *.js",
     "start": "node server"
   },
-  "author": "",
-  "license": "ISC",
+  "contributors": [
+    "Jérôme Desboeufs <jerome.desboeufs@data.gouv.fr>",
+    "Nabil Servais <nabil.servais@modernisation.gouv.fr>",
+    "Vincent Sagniez <vincent.sagniez@ign.fr>",
+    "Mickael Borne <mickael.borne@ign.fr>"
+  ],
+  "repository": "sgmap/apicarto-cadastre",
+  "license": "AGPL-3.0",
   "dependencies": {
     "body-parser": "^1.14.1",
     "cors": "^2.7.1",
