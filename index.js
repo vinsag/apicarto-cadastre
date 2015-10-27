@@ -1,46 +1,58 @@
-var Hapi = require('hapi');
-var Zone = require('./handlers/zone');
+/*
+ * Dependencies
+ */
+var express = require('express');
+var request = require('request');
+var nconf = require('nconf');
+var CadastreClient = require('./lib/CadastreClient.js') ;
+var parse_insee = require('./lib/parse_insee.js') ;
+//var geojson_flip_lonlat = require('./lib/geojson_flip_lonlat.js') ;
 
-// Create a server with a host and port
-var server = new Hapi.Server();
-server.connection({ 
-    host: 'localhost', 
-    port: 8000 
-});
-var plugin = {
-    register: require('hapi-node-postgres'),
-    options: {
-        connectionString: 'postgres://nabil:lala@localhost/cadastre',
-        native: true
+console.log(parse_insee("25349")) ;
+console.log(parse_insee("97185")) ;
+
+/*
+ * Configuration
+ */
+nconf.env().argv().defaults({
+    'http': {
+        'port': '8080'
     },
-};
-
-server.register(plugin, function (err) {
-
-    if (err) {
-        console.error('Failed loading "hapi-node-postgres" plugin');
-    }
-});
-server.register({
-  register: require('good'),
-  options: {
-    reporters: [{
-      reporter: require('good-console'),
-      args:[{ response: '*' }]
-    }]
-  }
-}, function (err) {
-  if (err) {
-    throw err;
-  }
+    key: null,
+    referer: "http://localhost",
+    proxy: null
 });
 
-// Add the route
-server.route({
-    method: ['POST'],
-    path:'/cadastre',
-    handler: Zone.zonage
-});
+if ( null === nconf.get("key") ){
+    console.log("Paramètre manquant 'key' (--key=[VOTRE_CLEF_GEOPORTAIL])");
+    process.exit(1);
+}
 
-// Start the server
-server.start();
+console.log( "listening port "+nconf.get("http:port") );
+console.log("============================================") ;
+console.log( "key = "+nconf.get("key") );
+console.log( "referer = "+nconf.get("referer") );
+console.log( "proxy = "+nconf.get("proxy")) ;
+console.log("============================================") ;
+
+/*
+ * Init client
+ */
+var cadastreClient = new CadastreClient(nconf.get("key"), nconf.get("referer"));
+cadastreClient.setProxy(nconf.get("proxy"));
+
+/*
+ * Route & serv
+ */
+var app = express();
+
+app.use(express.static('public'));
+
+var bodyParser = require('body-parser');
+
+app.use(bodyParser.json());
+
+
+require('./routes.js')(app,cadastreClient);
+
+app.listen(nconf.get('http:port'));
