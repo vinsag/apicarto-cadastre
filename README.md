@@ -1,11 +1,12 @@
+# APICarto Cadastre [![Build Status](https://travis-ci.org/sgmap/apicarto-cadastre.svg)](https://travis-ci.org/sgmap/apicarto-cadastre)
 
-# Installation des dépendances NodeJS
+## Installation des dépendances NodeJS
 
 ```
 npm install
 ```
 
-# Exécution du service
+## Exécution du service
 
 ```
 GEOPORTAIL_KEY=VOTRE_CLE_GEOPORTAIL GEOPORTAIL_REFERER=REFERER_DE_LA_CLE npm start
@@ -25,9 +26,9 @@ Autres options :
 
 `GEOPORTAIL_PROXY=url_du_proxy`
 
-# API
+## API
 
-## Récupérer les sections pour une communes
+### Récupérer les sections pour une communes
 
 ```
 GET /section?code_dep=25&code_com=349
@@ -35,7 +36,7 @@ GET /section?code_dep=25&code_com=349
 
 Résultat : FeatureCollection GeoJSON
 
-## Récupérer les parcelles pour une section
+### Récupérer les parcelles pour une section
 
 ```
 GET /parcelle?code_dep=25&code_com=349&
@@ -43,7 +44,7 @@ GET /parcelle?code_dep=25&code_com=349&
 
 Résultat : FeatureCollection GeoJSON
 
-### Récuper les informations parcelles et calcul de surface via une geometrie
+#### Récuper les informations parcelles et calcul de surface via une geometrie
 GET /geometrie?geom=FeatureCollection.
 Exemple : 
 {
@@ -63,15 +64,15 @@ Exemple :
  }
 
 
-# Obtenir une clé géoportail
+## Obtenir une clé géoportail
 
 TODO : détailler le processus pour les clés WFS
 
-# Notes techniques
+## Notes techniques
 
 Ce service se repose sur l'appel à des services WFS de l'API géoportail
 
-## Service WFS
+### Service WFS
 
 
 * Récupérer les divisions cadastrales (couple=> autocomplétion sur section et commune absorbée)
