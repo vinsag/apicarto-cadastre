@@ -107,4 +107,6 @@ module.exports = function (options) {
             res.json(featureCollection);
         }) ;
     });*/
+
+    return router;
 };
