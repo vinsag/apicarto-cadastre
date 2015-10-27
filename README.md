@@ -8,12 +8,12 @@ npm install
 # Exécution du service
 
 ```
-nodejs index.js --key [VOTRE_CLE_GEOPORTAIL] --referer [REFEREF_DE_LA_CLE]
+GEOPORTAIL_KEY=VOTRE_CLE_GEOPORTAIL GEOPORTAIL_REFERER=REFERER_DE_LA_CLE npm start
 ```
 Exemple :
 
 ```
-node index.js --key 5ad45a4d54a5d4a5d4ad --referer "http://mborne.github.io"
+GEOPORTAIL_KEY=5ad45a4d54a5d4a5d4ad GEOPORTAIL_REFERER=http://mborne.github.io npm start
 ```
 
 Autres options :
@@ -23,7 +23,7 @@ Autres options :
 
 * Proxy entre NodeJS et les services géoportail (http://wxs.ign.fr)
 
---proxy=http://[proxy-host]:[proxy-port]
+`GEOPORTAIL_PROXY=url_du_proxy`
 
 # API
 
