@@ -1,0 +1,16 @@
+{
+    "apps": [
+        {
+            "name": "apicarto-cadastre",
+            "script": "server.js",
+            "exec_mode": "cluster",
+            "instances": 1,
+            "env": {
+                "PORT": 8080,
+                "GEOPORTAIL_KEY": null,
+                "GEOPORTAIL_REFERER": "http://localhost",
+                "GEOPORTAIL_PROXY": null
+            }
+        }
+    ]
+}
