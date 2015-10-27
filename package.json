@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "node_modules/.bin/mocha test/*.js",
-    "lint": "eslint handlers/**/*.js lib/**/*.js"
+    "lint": "eslint lib/**/*.js *.js"
   },
   "author": "",
   "license": "ISC",

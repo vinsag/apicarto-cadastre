@@ -1,25 +1,22 @@
 {
     "rules": {
         "indent": [
-            1,
+            2,
             4
         ],
         "quotes": [
-            1,
+            2,
             "single"
         ],
         "linebreak-style": [
-            1,
+            2,
             "unix"
         ],
         "semi": [
-            1,
+            2,
             "always"
         ],
         "no-console": [
-            1
-        ],
-        "comma-dangle": [
             1
         ]
     },

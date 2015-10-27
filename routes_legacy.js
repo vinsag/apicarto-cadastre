@@ -1,6 +1,4 @@
-var prepare_section_params = require('./lib/prepare_section_params');
-
-module.exports = function(app,cadastreClient){
+module.exports = function (app) {
 
     /**
      * Récupération des divisions pour une commune.
@@ -9,7 +7,7 @@ module.exports = function(app,cadastreClient){
      *
      */
     app.post('/cadastre', function(req,res){
-        res.json({"message":"TODO"});
+        res.json({ message: 'TODO' });
     });
 
 
@@ -20,7 +18,7 @@ module.exports = function(app,cadastreClient){
      *
      */
     app.get('/search/cadastre', function(req,res){
-        res.json({"message":"TODO"});
+        res.json({ message: 'TODO' });
     });
 
-}
+};
