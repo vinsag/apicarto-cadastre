@@ -7,9 +7,9 @@
             "instances": 1,
             "env": {
                 "PORT": 8080,
-                "GEOPORTAIL_KEY": null,
+                "GEOPORTAIL_KEY": "",
                 "GEOPORTAIL_REFERER": "http://localhost",
-                "GEOPORTAIL_PROXY": null
+                "GEOPORTAIL_PROXY": ""
             }
         }
     ]

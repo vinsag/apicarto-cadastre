@@ -21,7 +21,6 @@ module.exports = function (options) {
                 res.send(body);
             } else {
                 //console.log(body);
-                res.set('Content-Type', 'application/text');
                 res.send('Le service distant n\'est pas disponible');
             }
         });
