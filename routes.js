@@ -1,15 +1,25 @@
+var Router = require('express').Router;
+
 var prepare_section_params = require('./lib/prepare_section_params');
 var geojson_flip_lonlat = require('./lib/geojson_flip_lonlat.js');
+var CadastreClient = require('./lib/CadastreClient.js');
 
-module.exports = function(app,cadastreClient){
+module.exports = function (options) {
+    if (!options.key) {
+        throw new Error('Key is not defined');
+    }
 
-    app.get('/capabilities', function(req, res) {
+    var router = new Router();
+    var cadastreClient = new CadastreClient(options.key, options.referer || 'http://localhost');
+    cadastreClient.setProxy(options.proxy);
+
+    router.get('/capabilities', function(req, res) {
         cadastreClient.getCapabilities(function(body){
-            if ( body ){
+            if (body) {
                 //console.log(body);
                 res.set('Content-Type', 'text/xml');
                 res.send(body);
-            }else{
+            } else {
                 //console.log(body);
                 res.set('Content-Type', 'application/text');
                 res.send('Le service distant n\'est pas disponible');
@@ -23,7 +33,7 @@ module.exports = function(app,cadastreClient){
      * Paramètres : code_dep=25 et code_com=349
      *
      */
-    app.get('/cadastre/division', function(req,res){
+    router.get('/division', function (req,res) {
         var params = prepare_section_params(req.query);
         // console.log(JSON.stringify(params));
         cadastreClient.getDivisions(params,function(featureCollection){
@@ -38,7 +48,7 @@ module.exports = function(app,cadastreClient){
      * Paramètres : code_dep=25 et code_com=349
      *
      */
-    app.get('/cadastre/parcelle', function(req,res){
+    router.get('/parcelle', function (req,res) {
         //TODO prepare_parcelle_params
         var params = prepare_section_params(req.query);
         // console.log(params.bbox);
@@ -54,9 +64,8 @@ module.exports = function(app,cadastreClient){
      * Paramètres : une feature avec pour nom "geom"...
      *
      */
-     
 
-    app.get('/cadastre/geometrie', function(req,res){
+    router.get('/geometrie', function (req,res) {
         /*var feature = {
     "type":"Feature",
     "geometry":
@@ -71,7 +80,7 @@ module.exports = function(app,cadastreClient){
         /*var params = {
             geom: feature.geometry
         };*/
-        cadastreClient.getCadastreFromGeom(feature,function(featureCollection){
+        cadastreClient.getCadastreFromGeom(feature, function (featureCollection) {
             res.json(featureCollection);
         });
 
