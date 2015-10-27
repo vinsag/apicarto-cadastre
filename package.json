@@ -1,9 +1,26 @@
 {
- "name": "apicarto-cadastre",
- "version": "0.0.2",
- "description": "An interface for querying french cadastre.",
- "main": "index.js",
- "author": "Nabil Servais (SGMAP)",
- "private": true,
- "license": "MIT"
-} 
+  "name": "express-cadastre",
+  "version": "0.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "node_modules/.bin/mocha test/*.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.13.3",
+    "nconf": "^0.8.2",
+    "turf: "^2.0.2",
+    "util:"0.10.3",
+    "terraformer-wkt-parser:"1.0.1",
+    "request:"2.65.0",
+    "body-parser:"1.14.1"
+  },
+  "devDependencies": {
+    "mocha": "^2.3.3",
+    "unit.js": "^2.0.0",
+    
+    
+  }
+}
