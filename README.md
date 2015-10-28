@@ -19,12 +19,12 @@ GEOPORTAIL_KEY=5ad45a4d54a5d4a5d4ad GEOPORTAIL_REFERER=http://mborne.github.io n
 
 Autres options :
 
-* Définir le port HTTP
+* Définir le port HTTP avec `PORT` (8080 par défaut)
 
 
-* Proxy entre NodeJS et les services géoportail (http://wxs.ign.fr)
+## Développement derrière un proxy
 
-`GEOPORTAIL_PROXY=url_du_proxy`
+En cas de nécessité, utiliser les [variables d'environnement standards](https://www.npmjs.com/package/request#controlling-proxy-behaviour-using-environment-variables).
 
 ## API
 
