@@ -3,8 +3,9 @@
   "version": "0.1.0",
   "main": "index.js",
   "scripts": {
-    "lint": "eslint lib/**/*.js *.js",
-    "start": "node server"
+    "lint": "eslint lib/**/*.js test/**/*.js *.js",
+    "start": "node server",
+    "test": "mocha test/*.js"
   },
   "contributors": [
     "Jérôme Desboeufs <jerome.desboeufs@data.gouv.fr>",
@@ -24,6 +25,8 @@
     "turf": "^2.0.2"
   },
   "devDependencies": {
-    "eslint": "^1.7.2"
+    "eslint": "^1.7.2",
+    "mocha": "^2.3.3",
+    "unit.js": "^2.0.0"
   }
 }
