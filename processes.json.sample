@@ -9,7 +9,7 @@
                 "PORT": 8080,
                 "GEOPORTAIL_KEY": "",
                 "GEOPORTAIL_REFERER": "http://localhost",
-                "GEOPORTAIL_PROXY": ""
+                "HTTP_PROXY": "http://i-want-to-leave-my-jail.tld"
             }
         }
     ]

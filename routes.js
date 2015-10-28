@@ -11,7 +11,6 @@ module.exports = function (options) {
 
     var router = new Router();
     var cadastreClient = new CadastreClient(options.key, options.referer || 'http://localhost');
-    cadastreClient.setProxy(options.proxy);
 
     router.get('/capabilities', function(req, res) {
         cadastreClient.getCapabilities(function(body){
