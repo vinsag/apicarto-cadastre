@@ -31,7 +31,7 @@ En cas de nécessité, utiliser les [variables d'environnement standards](https:
 ### Récupérer les sections pour une communes
 
 ```
-GET /section?code_dep=25&code_com=349
+GET /division?code_dep=25&code_com=349
 ```
 
 Résultat : FeatureCollection GeoJSON
