@@ -58,11 +58,21 @@ module.exports = function (options) {
      */
 
     router.get('/geometrie', function (req,res) {
-        var feature = JSON.parse(req.query.geom);        
-        cadastreClient.getCadastreFromGeom(feature, function (featureCollection) {
+        if (!req.query.geom)
+            return res.status(400).send({ code: 400, message: 'geom field is required'});
+
+        cadastreClient.getCadastreFromGeom(JSON.parse(req.query.geom), function (featureCollection) {
             res.json(featureCollection);
         });
+    });
 
+    router.post('/geometrie', function (req, res) {
+        if (!req.body.geom)
+            return res.status(400).send({ code: 400, message: 'geom field is required'});
+
+        cadastreClient.getCadastreFromGeom(req.body.geom, function (featureCollection) {
+            res.json(featureCollection);
+        });
     });
 
     return router;
