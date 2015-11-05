@@ -49,6 +49,21 @@ module.exports = function (options) {
             res.json(featureCollection);
         });
     });
+    
+    /**
+     * Récupération des divisions pour une commune.
+     *
+     * Paramètres : code_dep=25 et code_com=349
+     *
+     */
+    router.get('/commune', function (req,res) {
+        //TODO prepare_parcelle_params
+        var params = prepare_section_params(req.query);
+        cadastreClient.getCommune(params,function(featureCollection){
+            res.json(featureCollection);
+        });
+    });
+
 
  /**
      * Récupération des informations cadastre et commune
