@@ -90,5 +90,18 @@ module.exports = function (options) {
         });
     });
 
+/**
+     * Récupération des localisants
+     *
+     * Paramètres : une feature avec pour nom "geom"...
+     *
+     */
+
+    router.get('/localisant', function (req,res) {
+        var params = prepare_section_params(req.query);
+        cadastreClient.getLocalisant(params,function(featureCollection){
+            res.json(featureCollection);
+        });
+    });
     return router;
 };
