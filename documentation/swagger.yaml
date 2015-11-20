@@ -19,7 +19,8 @@ info:
     
     
     (Ceci est une structure générale la liste des champs properties sera détaillée dans chaque module.
-    Pour la partie properties, il faudra consulter la liste des champs dans les "Models" en base de page)
+    Toutes les structures de réponse sont  de type FeatureCollection. 
+    Afin de décrire chaque partie propriété les noms seront adaptés avec l'ajout du module après FeatureCollection sauf pour le premier module)
 
     
     ```json
@@ -94,15 +95,15 @@ info:
     4) Localisants:  http://apicarto.sgmap.fr/cadastre/localisant?insee=xxxx
     
     
-    5) Localisants:  http://apicarto.sgmap.fr/cadastre/commune?geom= (Geometrie au format JSON)
+    5) Géometrie:  http://apicarto.sgmap.fr/cadastre/geometrie?geom=(Geometrie au format JSON)
   
   
   version: 1.0.0
   contact:
-  name: Apicarto Cadastre
+    name: Apicarto Cadastre
   license:
-  name: AGPL-V3
-  url: https://www.gnu.org/licenses/agpl-3.0.html
+    name: AGPL-V3
+    url: https://www.gnu.org/licenses/agpl-3.0.html
 host: apicarto.sgmap.fr
 schemes:
   - https
@@ -116,7 +117,6 @@ paths:
       description: |
         Retourne un résultat de Type "FeatureCollection".
         
-        Pour l'objet "properties" dans le featureCollection, la description se trouve dans les models :ListePropertiesCommune.
       parameters:
         - name: code_insee
           in: query
@@ -139,8 +139,6 @@ paths:
 
         * Paramètre insee(5 caractères) => Retour des divisions parcellaires d'une commune
         * Paramètre Insee + section(sur 2 caractères) => Retour des divisions parcellaires d'une section dans une commune
-        
-        Pour l'objet "properties" dans le featureCollection, la description se trouve dans les models :ListePropertiesDivision.
      
       parameters:
         - name: insee
@@ -159,7 +157,7 @@ paths:
         '200':
           description: Success
           schema:
-            $ref: '#/definitions/FeatureCollection'
+            $ref: '#/definitions/FeatureCollectionDivision'
         
               
   /cadastre/parcelle:
@@ -167,7 +165,6 @@ paths:
       summary: Recherche d'informations sur les parcelles cadastrales d'une commune
       description: |
         Retourne un résultat de Type "FeatureCollection" avec différentes informations sur les parcelles cadastrales.
-        Pour l'objet "properties" dans le featureCollection, la description se trouve dans les models : ListePropertiesParcelleLocalisant.
       parameters:
         - name: insee
           in: query
@@ -191,7 +188,7 @@ paths:
         '200':
           description: Success
           schema:
-            $ref: '#/definitions/FeatureCollection'
+            $ref: '#/definitions/FeatureCollectionParcelle'
         
         
   /cadastre/geometrie:
@@ -199,15 +196,14 @@ paths:
       summary: Informations cadastrales sur l'intersection d'une géométrie avec des parcelles cadastrales
       description: |
         Prends en entrée une géométrie au format JSON et retourne une featureCollection.
-        Retourne un résultat de Type "FeatureCollection" avec les informations sur les parcelles
-        Pour l'objet "properties" dans le featureCollection, la description se trouve dans les models :ListePropertiesGeometrie.
+        Retourne un résultat de Type "FeatureCollection" avec les informations sur les parcelles qui intersectent la géométrie.
       tags:
         - Geometrie
       responses:
         '200':
           description: Success
           schema:
-            $ref: '#/definitions/FeatureCollection' 
+            $ref: '#/definitions/FeatureCollectionGeometrie' 
     
   /cadastre/localisant:
     get:
@@ -230,13 +226,11 @@ paths:
           description: Numero de la parcelle sur 4 caractères
           type: string
           required: false
-          tags:
-            - Parcelle
       responses:
         '200':
           description: Success
           schema:
-            $ref: '#/definitions/FeatureCollection'
+            $ref: '#/definitions/FeatureCollectionLocalisant'
         
   
 definitions:
@@ -244,7 +238,8 @@ definitions:
     type: object
     properties:
       type:
-        type: string 
+        type: string
+        description: Le type corresponds au type de Géométrie(MultiPolygon ou Point)
       coordinates:
         type: array
         items:
@@ -255,25 +250,133 @@ definitions:
   Features:
     type: object
     properties:
-      feature:
+      type:
         type: string
-        description: Type Multipolygon ou point pour les localisants
+        description: La valeur de type est "Feature"
       id:
         type: string
       geometry:
-          $ref: '#/definitions/Geometry'
+        $ref: '#/definitions/Geometry'
       geometry_name: 
         type: string
       properties:
-        type:array
+        $ref: '#/definitions/ListePropertiesCommune'
         
   FeatureCollection:
     type: object
     properties:
       FeaturesCollection:
+        type:
+          type: string
+          description: Le type est FeatureCollection
         type: array
-        $ref: '#/definitions/Features'
-    
+        items:
+          $ref: '#/definitions/Features'
+  
+  FeaturesLocalisant:
+    type: objet
+    properties:
+      type:
+        type: string
+        description: La valeur de type est "Feature"
+      id:
+        type: string
+      geometry:
+        $ref: '#/definitions/Geometry'
+      geometry_name: 
+        type: string
+      properties:
+          $ref: '#/definitions/ListePropertiesLocalisant'
+        
+  FeatureCollectionLocalisant:
+    type: object
+    properties:
+      type:
+        type: string
+        description: Le type est FeatureCollection
+      features: 
+        type: array
+        items:
+          $ref: '#/definitions/FeaturesLocalisant'
+  
+  FeaturesDivision:
+    type: object
+    properties:
+      type:
+        type: string
+        description: La valeur de type est "Feature"
+      id:
+        type: string
+      geometry:
+        $ref: '#/definitions/Geometry'
+      geometry_name: 
+        type: string
+      properties:
+        $ref: '#/definitions/ListePropertiesDivision'
+        
+  FeatureCollectionDivision:
+    type: object
+    properties:
+      type:
+        type: string
+        description: Le type est FeatureCollection
+      FeaturesCollection:
+        type: array
+        items:
+          $ref: '#/definitions/FeaturesDivision'
+        
+  FeaturesParcelle:
+    type: object
+    properties:
+      type:
+        type: string
+        description: La valeur de type est "Feature"
+      id:
+        type: string
+      geometry:
+        $ref: '#/definitions/Geometry'
+      geometry_name: 
+        type: string
+      properties:
+        $ref: '#/definitions/ListePropertiesParcelle'
+        
+  FeatureCollectionParcelle:
+    type: object
+    properties:
+      type:
+        type: string
+        description: Le type est FeatureCollection
+      FeaturesCollection:
+        type: array
+        items:
+          $ref: '#/definitions/FeaturesParcelle'
+        
+  FeaturesGeometrie:
+    type: object
+    properties:
+      type:
+        type: string
+        description: La valeur de type est "Feature"
+      id:
+        type: string
+      geometry:
+        $ref: '#/definitions/Geometry'
+      geometry_name: 
+        type: string
+      properties:
+        $ref: '#/definitions/ListePropertiesGeometrie'
+        
+  FeatureCollectionGeometrie:
+    type: object
+    properties:
+      type:
+        type: string
+        description: Le type est FeatureCollection
+      FeaturesCollection:
+        type: array
+        items:
+          $ref: '#/definitions/FeaturesGeometrie'
+          
   ListePropertiesCommune:
     type: object
     properties:
@@ -288,7 +391,7 @@ definitions:
     type: object
     properties:
       feuille:
-        type: string
+        type: number
       section:
         type: string
       code_dep:
@@ -302,13 +405,13 @@ definitions:
       code_arr:
         type: string
         
-  ListePropertiesParcelleLocalisant:
+  ListePropertiesParcelle:
     type: object
     properties:
       numero:
         type: string
       feuille:
-        type: string
+        type: number
       section:
         type: string
       code_dep:
@@ -322,6 +425,25 @@ definitions:
       code_arr:
         type: string
         
+  ListePropertiesLocalisant:
+    type: object
+    properties:
+      numero:
+        type: string
+      feuille:
+        type: number
+      section:
+        type: string
+      code_dep:
+        type: string
+      code_com:
+        type: string
+      com_abs: 
+        type: string
+      echelle:
+        type: string
+      code_arr:
+        type: string
   ListePropertiesGeometrie:
     type: object
     tags:
@@ -330,12 +452,11 @@ definitions:
       surface_intersection:
         type: string
       surface_parcelle:
-        type: number
-        format: float
+        type: float
       numero:
         type: string
       feuille:
-        type: string
+        type: number
       section:
         type: string
       code_dep:
@@ -348,10 +469,3 @@ definitions:
         type: string
       code_arr:
         type: string
-  
-  
-      
-     
-  
-  
-      
