@@ -3,7 +3,6 @@ info:
   title: APICARTO Cadastre
   description: >
     Le service d'interrogation du cadastre permet d'obtenir les informations suivantes :
-
     * Obtenir les géométries pour une commune
     
     * Obtenir les divisions parcellaires d'une commune
@@ -14,14 +13,11 @@ info:
     
     * Obtenir le centroid d'une parcelle ou d'une commune(localisants)
     
-
     Pour les différentes requêtes possible ci-dessus, le résultat renvoyé sera sous la forme:
     
     
-    (Ceci est une structure générale la liste des champs properties sera détaillée dans chaque module.
-    Toutes les structures de réponse sont  de type FeatureCollection. 
-    Afin de décrire chaque partie propriété les noms seront adaptés avec l'ajout du module après FeatureCollection sauf pour le premier module)
-
+    ( Toutes les structures de réponse sont  de type FeatureCollection avec la liste des champs properties qui sera détaillée dans chaque module.)
+    
     
     ```json
 
@@ -60,27 +56,25 @@ info:
 
 
     ## Obtenir une clé géoportail
-
+    
     Pour obtenir une clé geoportail, vous devez vous connecter au site : http://professionnels.ign.fr/ ou http://api.ign.fr/accueil(pour une clé de développement)
     
     ## Notes techniques
     
     Ce service se repose sur l'appel à des services WFS de l'API géoportail de l'IGN
-
+    
     ## Service WFS
-
+    
     * Récupérer les divisions cadastrales (couple=> autocomplétion sur section et commune absorbée)
     
-    
-    
-      http://wxs.ign.fr/[API_KEY]/geoportail/wfs?request=GetFeature&version=2.0&typename=BDPARCELLAIRE-VECTEUR_WLD_BDD_WGS84G:divcad&outputFormat=application/json&cql_filter=code_dep=25%20and%20code_com=349
+    http://wxs.ign.fr/[API_KEY]/geoportail/wfs?request=GetFeature&version=2.0&typename=BDPARCELLAIRE-VECTEUR_WLD_BDD_WGS84G:divcad&outputFormat=application/json&cql_filter=code_dep=25%20and%20code_com=349
      
      
     * Recherche d'une parcelle précise
     
    
       http://wxs.ign.fr/[API_KEY]/geoportail/wfs?request=GetFeature&version=2.0.0&typename=BDPARCELLAIRE-VECTEUR_WLD_BDD_WGS84G:parcelle&CountDefault=100&outputFormat=application/json&cql_filter=code_dep=25%20and%20code_com=349
-
+    
     ## Liste des urls à utiliser pour utiliser le service
   
     1) Communes : http://apicarto.sgmap.fr/cadastre/commune?code_insee=xxxx
@@ -96,8 +90,6 @@ info:
     
     
     5) Géometrie:  http://apicarto.sgmap.fr/cadastre/geometrie?geom=(Geometrie au format JSON)
-  
-  
   version: 1.0.0
   contact:
     name: Apicarto Cadastre
@@ -116,12 +108,12 @@ paths:
       summary: Recherche de toutes les géométries d'une commune
       description: |
         Retourne un résultat de Type "FeatureCollection".
-        
       parameters:
         - name: code_insee
           in: query
           description: Code insee de la commune sur 5 caractères
           type: string
+          pattern: '\d{5}'
           required: true
       tags:
         - Commune
@@ -129,26 +121,26 @@ paths:
         '200':
           description: Success
           schema:
-            $ref: '#/definitions/FeatureCollection'
-            
+            $ref: '#/definitions/Communes'
+
   /cadastre/division:
     get:
       summary: Recherche d'informations sur les divisions parcellaires d'une commune
       description: |
         Retourne un résultat de Type "FeatureCollection" avec la liste des divisions parcellaires d'une commune
-
-        * Paramètre insee(5 caractères) => Retour des divisions parcellaires d'une commune
-        * Paramètre Insee + section(sur 2 caractères) => Retour des divisions parcellaires d'une section dans une commune
-     
+        * Paramètre insee => Retour des divisions parcellaires d'une commune
+        * Paramètre Insee + section => Retour des divisions parcellaires d'une section dans une commune
       parameters:
         - name: insee
           in: query
           description: Code insee de la commune sur 5 caractères
           type: string
+          pattern: '\d{5}'
           required: true
         - name: section
           in: query
           description: Section de la parcelle sur 2 caractères
+          pattern: '\w{2}'
           type: string
           required: false
       tags:
@@ -157,9 +149,9 @@ paths:
         '200':
           description: Success
           schema:
-            $ref: '#/definitions/FeatureCollectionDivision'
-        
-              
+            $ref: '#/definitions/Divisions'
+
+
   /cadastre/parcelle:
     get:
       summary: Recherche d'informations sur les parcelles cadastrales d'une commune
@@ -170,27 +162,30 @@ paths:
           in: query
           description: Code insee de la commune sur 5 caractères
           type: string
+          pattern: '\d{5}'
           required: true
         - name: section
           in: query
           description: Section de la parcelle sur 2 caractères
           type: string
+          pattern: '\w{2}'
           required: false
         - name: numero
           in: query
           description: Numero de la parcelle sur 4 caractères
           type: string
+          pattern: '\d{4}'
           required: false
       tags:
         - Parcelle
-          
+
       responses:
         '200':
           description: Success
           schema:
-            $ref: '#/definitions/FeatureCollectionParcelle'
-        
-        
+            $ref: '#/definitions/Parcelles'
+
+
   /cadastre/geometrie:
     get:
       summary: Informations cadastrales sur l'intersection d'une géométrie avec des parcelles cadastrales
@@ -203,8 +198,8 @@ paths:
         '200':
           description: Success
           schema:
-            $ref: '#/definitions/FeatureCollectionGeometrie' 
-    
+            $ref: '#/definitions/Geometries'
+
   /cadastre/localisant:
     get:
       summary: Informations sur les parcelles non vectorisées.
@@ -216,29 +211,39 @@ paths:
           in: query
           description: Code insee de la commune sur 5 caractères
           type: string
+          pattern: '\d{5}'
           required: true
         - name: section
           in: query
           description: Section de la parcelle
           type: string
+          pattern: '\w{2}'
         - name: numero
           in: query
           description: Numero de la parcelle sur 4 caractères
           type: string
+          pattern: '\d{4}'
           required: false
       responses:
         '200':
           description: Success
           schema:
-            $ref: '#/definitions/FeatureCollectionLocalisant'
-        
-  
+            $ref: '#/definitions/Localisants'
+
+
 definitions:
   Geometry:
     type: object
+    description: Une `Geometry` au sens GeoJSON
+    externalDocs:
+      url: http://geojson.org/geojson-spec.html#geometry-objects
+      description: La documentation officielle du type `Geometry` de GeoJSON
     properties:
       type:
         type: string
+        enum:
+        - MultiPolygon
+        - Point
         description: Le type corresponds au type de Géométrie(MultiPolygon ou Point)
       coordinates:
         type: array
@@ -246,226 +251,214 @@ definitions:
           type: array
           items:
             type: number
-          
-  Features:
+
+  Feature:
     type: object
+    description: Une `Feature` au sens GeoJSON
+    externalDocs:
+      url: http://geojson.org/geojson-spec.html#feature-objects
+      description: La documentation officielle du type `Feature` de GeoJSON
     properties:
       type:
         type: string
+        enum:
+        - Feature
         description: La valeur de type est "Feature"
       id:
         type: string
       geometry:
         $ref: '#/definitions/Geometry'
-      geometry_name: 
-        type: string
       properties:
-        $ref: '#/definitions/ListePropertiesCommune'
-        
+        type: object
+
   FeatureCollection:
     type: object
-    properties:
-      FeaturesCollection:
-        type:
-          type: string
-          description: Le type est FeatureCollection
-        type: array
-        items:
-          $ref: '#/definitions/Features'
-  
-  FeaturesLocalisant:
-    type: objet
+    description: Une `FeatureCollection` au sens GeoJSON
+    externalDocs:
+      url: http://geojson.org/geojson-spec.html#feature-collection-objects
+      description: La documentation officielle du type `FeatureCollection` de GeoJSON
     properties:
       type:
         type: string
-        description: La valeur de type est "Feature"
-      id:
-        type: string
-      geometry:
-        $ref: '#/definitions/Geometry'
-      geometry_name: 
-        type: string
-      properties:
-          $ref: '#/definitions/ListePropertiesLocalisant'
-        
-  FeatureCollectionLocalisant:
-    type: object
-    properties:
-      type:
-        type: string
+        enum:
+        - Feature
         description: Le type est FeatureCollection
-      features: 
+      features:
         type: array
-        items:
-          $ref: '#/definitions/FeaturesLocalisant'
-  
-  FeaturesDivision:
-    type: object
-    properties:
-      type:
-        type: string
-        description: La valeur de type est "Feature"
-      id:
-        type: string
-      geometry:
-        $ref: '#/definitions/Geometry'
-      geometry_name: 
-        type: string
+        items: object
+
+  Commune:
+    description: ''
+    allOf:
+    - $ref: '#/definitions/Feature'
+    - properties:
+        properties:
+          type: object
+          properties:
+            nom_commune:
+              type: string
+            code_dep:
+              type: string
+            code_insee:
+              type: string
+
+  Communes:
+    description: Une `FeatureCollection` contenant uniquement des features de type `Commune`
+    allOf:
+    - $ref: '#/definitions/FeatureCollection'
+    - type: object
       properties:
-        $ref: '#/definitions/ListePropertiesDivision'
-        
-  FeatureCollectionDivision:
-    type: object
-    properties:
-      type:
-        type: string
-        description: Le type est FeatureCollection
-      FeaturesCollection:
-        type: array
-        items:
-          $ref: '#/definitions/FeaturesDivision'
-        
-  FeaturesParcelle:
-    type: object
-    properties:
-      type:
-        type: string
-        description: La valeur de type est "Feature"
-      id:
-        type: string
-      geometry:
-        $ref: '#/definitions/Geometry'
-      geometry_name: 
-        type: string
+        features:
+          type: array
+          items:
+            $ref: '#/definitions/Commune'
+
+  Division:
+    description: ''
+    allOf:
+    - $ref: '#/definitions/Feature'
+    - type: object
       properties:
-        $ref: '#/definitions/ListePropertiesParcelle'
-        
-  FeatureCollectionParcelle:
-    type: object
-    properties:
-      type:
-        type: string
-        description: Le type est FeatureCollection
-      FeaturesCollection:
-        type: array
-        items:
-          $ref: '#/definitions/FeaturesParcelle'
-        
-  FeaturesGeometrie:
-    type: object
-    properties:
-      type:
-        type: string
-        description: La valeur de type est "Feature"
-      id:
-        type: string
-      geometry:
-        $ref: '#/definitions/Geometry'
-      geometry_name: 
-        type: string
+        properties:
+          type: object
+          properties:
+            feuille:
+              type: number
+            section:
+              type: string
+            code_dep:
+              type: string
+            code_com:
+              type: string
+            com_abs:
+              type: string
+            echelle:
+              type: string
+            code_arr:
+              type: string
+
+  Divisions:
+    description: Une `FeatureCollection` contenant uniquement des features de type `Division`
+    allOf:
+    - $ref: '#/definitions/FeatureCollection'
+    - type: object
       properties:
-        $ref: '#/definitions/ListePropertiesGeometrie'
-        
-  FeatureCollectionGeometrie:
-    type: object
-    properties:
-      type:
-        type: string
-        description: Le type est FeatureCollection
-      FeaturesCollection:
-        type: array
-        items:
-          $ref: '#/definitions/FeaturesGeometrie'
-          
-  ListePropertiesCommune:
-    type: object
-    properties:
-      nom_commune:
-        type: string
-      code_dep:
-        type: string
-      code_insee:
-        type: string
-        
-  ListePropertiesDivision:
-    type: object
-    properties:
-      feuille:
-        type: number
-      section:
-        type: string
-      code_dep:
-        type: string
-      code_com:
-        type: string
-      com_abs: 
-        type: string
-      echelle:
-        type: string
-      code_arr:
-        type: string
-        
-  ListePropertiesParcelle:
-    type: object
-    properties:
-      numero:
-        type: string
-      feuille:
-        type: number
-      section:
-        type: string
-      code_dep:
-        type: string
-      code_com:
-        type: string
-      com_abs: 
-        type: string
-      echelle:
-        type: string
-      code_arr:
-        type: string
-        
-  ListePropertiesLocalisant:
-    type: object
-    properties:
-      numero:
-        type: string
-      feuille:
-        type: number
-      section:
-        type: string
-      code_dep:
-        type: string
-      code_com:
-        type: string
-      com_abs: 
-        type: string
-      echelle:
-        type: string
-      code_arr:
-        type: string
-  ListePropertiesGeometrie:
-    type: object
-    tags:
-      - propertiesGeometrie
-    properties:
-      surface_intersection:
-        type: string
-      surface_parcelle:
-        type: float
-      numero:
-        type: string
-      feuille:
-        type: number
-      section:
-        type: string
-      code_dep:
-        type: string
-      code_com:
-        type: string
-      com_abs: 
-        type: string
-      echelle:
-        type: string
-      code_arr:
-        type: string
+        features:
+          type: array
+          items:
+            $ref: '#/definitions/Division'
+
+  Parcelle:
+    description: ''
+    allOf:
+    - $ref: '#/definitions/Feature'
+    - type: object
+      properties:
+        properties:
+          type: object
+          properties:
+            numero:
+              type: string
+            feuille:
+              type: number
+            section:
+              type: string
+            code_dep:
+              type: string
+            code_com:
+              type: string
+            com_abs:
+              type: string
+            echelle:
+              type: string
+            code_arr:
+              type: string
+
+  Parcelles:
+    description: Une `FeatureCollection` contenant uniquement des features de type `Parcelle`
+    allOf:
+    - $ref: '#/definitions/FeatureCollection'
+    - type: object
+      properties:
+        features:
+          type: array
+          items:
+            $ref: '#/definitions/Parcelle'
+
+  Localisant:
+    description: ''
+    allOf:
+    - $ref: '#/definitions/Feature'
+    - type: object
+      properties:
+        properties:
+          type: object
+          properties:
+            numero:
+              type: string
+            feuille:
+              type: number
+            section:
+              type: string
+            code_dep:
+              type: string
+            code_com:
+              type: string
+            com_abs:
+              type: string
+            echelle:
+              type: string
+            code_arr:
+              type: string
+
+  Localisants:
+    description: Une `FeatureCollection` contenant uniquement des features de type `Localisant`
+    allOf:
+    - $ref: '#/definitions/FeatureCollection'
+    - type: object
+      properties:
+        features:
+          type: array
+          items:
+            $ref: '#/definitions/Localisant'
+
+  Geometrie:
+    description: ''
+    allOf:
+    - $ref: '#/definitions/Feature'
+    - type: object
+      properties:
+        properties:
+          type: object
+          properties:
+            surface_intersection:
+              type: string
+            surface_parcelle:
+              type: float
+            numero:
+              type: string
+            feuille:
+              type: number
+            section:
+              type: string
+            code_dep:
+              type: string
+            code_com:
+              type: string
+            com_abs:
+              type: string
+            echelle:
+              type: string
+            code_arr:
+              type: string
+
+  Geometries:
+    description: Une `FeatureCollection` contenant uniquement des features de type `Geometrie`
+    allOf:
+    - $ref: '#/definitions/FeatureCollection'
+    - type: object
+      properties:
+        features:
+          type: array
+          items:
+            $ref: '#/definitions/Geometrie'
